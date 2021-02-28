@@ -26,7 +26,7 @@ LEARNING_RATE_CRITIC = 1e-3
 TRPO_MAX_KL = 0.01
 TRPO_DAMPING = 0.1
 
-TEST_ITERS = 1000
+TEST_ITERS = 100000
 
 
 def test_net(net, env, count=10, device="cpu"):
@@ -177,7 +177,7 @@ if __name__ == "__main__":
                 logstd0_v = logstd_v.detach()
                 std_v = torch.exp(logstd_v)
                 std0_v = std_v.detach()
-                kl = logstd_v - logstd0_v + (std0_v ** 2 + ((mu0_v - mu_v) ** 2) / (2.0 * std_v ** 2)) - 0.5
+                kl = logstd_v - logstd0_v + (std0_v ** 2 + (mu0_v - mu_v) ** 2) / (2.0 * std_v ** 2) - 0.5
                 return kl.sum(1, keepdim=True)
 
             trpo.trpo_step(net_act, get_loss, get_kl, TRPO_MAX_KL, TRPO_DAMPING, device=device)
